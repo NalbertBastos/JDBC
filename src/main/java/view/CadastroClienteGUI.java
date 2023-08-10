@@ -21,11 +21,11 @@ public class CadastroClienteGUI {
         JPanel panel = new JPanel();
         panel.setLayout(new GridLayout(4, 2));
 
-        panel.add(new JLabel("Nome:"));
+        panel.add(new JLabel("Nome:")).getInputMethodRequests();
         final JTextField nomeField = new JTextField();
         panel.add(nomeField);
 
-        panel.add(new JLabel("Sobrenome:"));
+        panel.add(new JLabel("Sobrenome:")).getInputMethodRequests();
         final JTextField sobrenomeField = new JTextField();
         panel.add(sobrenomeField);
 
@@ -33,7 +33,7 @@ public class CadastroClienteGUI {
         final JTextField dataNascimentoField = new JTextField();
         panel.add(dataNascimentoField);
 
-        panel.add(new JLabel("Sexo:"));
+        panel.add(new JLabel("Sexo:")).getInputMethodRequests();
         final JComboBox<String> sexoComboBox = new JComboBox<>(new String[]{"Masculino", "Feminino"});
         panel.add(sexoComboBox);
 
@@ -45,35 +45,41 @@ public class CadastroClienteGUI {
                 String sobrenome = sobrenomeField.getText();
                 String dataNascimento = dataNascimentoField.getText();
                 String sexo = (String) sexoComboBox.getSelectedItem();
+                
+                if (nome.isEmpty() || sobrenome.isEmpty() || dataNascimento.isEmpty()) {
+                    JOptionPane.showMessageDialog(null, "Preencha todos os campos obrigatórios.");
+                } else {
+                	try {
+                        Connection connection = ConnectionMySQL.getConnectionMySQL();
+                        String query = "INSERT INTO pessoas (nome, sobrenome, nascimento, sexo) VALUES (?, ?, ?, ?)";
+                        PreparedStatement preparedStatement = connection.prepareStatement(query);
+                        preparedStatement.setString(1, nome);
+                        preparedStatement.setString(2, sobrenome);
+                        preparedStatement.setString(3, dataNascimento);
+                        preparedStatement.setString(4, sexo);
 
-                try {
-                    Connection connection = ConnectionMySQL.getConnectionMySQL();
-                    String query = "INSERT INTO pessoas (nome, sobrenome, nascimento, sexo) VALUES (?, ?, ?, ?)";
-                    PreparedStatement preparedStatement = connection.prepareStatement(query);
-                    preparedStatement.setString(1, nome);
-                    preparedStatement.setString(2, sobrenome);
-                    preparedStatement.setString(3, dataNascimento);
-                    preparedStatement.setString(4, sexo);
+                        preparedStatement.executeUpdate();
 
-                    preparedStatement.executeUpdate();
+                        preparedStatement.close();
+                        ConnectionMySQL.FecharConexao();
 
-                    preparedStatement.close();
-                    ConnectionMySQL.FecharConexao();
-
-                    JOptionPane.showMessageDialog(null, "Cliente cadastrado com sucesso!");
-                    System.out.println("Sucesso");
-                    System.out.println("***************************************");
-            		System.out.println("***************************************");
-            		System.out.println("***************************************");
-                    po.selectPeolple();
-                    System.out.println("***************************************");
-            		System.out.println("***************************************");
-            		System.out.println("***************************************");
-                } catch (SQLException ex) {
-                    ex.printStackTrace();
-                    JOptionPane.showMessageDialog(null, "Erro ao cadastrar cliente.");
+                        JOptionPane.showMessageDialog(null, "Cliente cadastrado com sucesso!");
+                        System.out.println("Sucesso");
+                        System.out.println("***************************************");
+                		System.out.println("***************************************");
+                		System.out.println("***************************************");
+                        po.selectPeolple();
+                        System.out.println("***************************************");
+                		System.out.println("***************************************");
+                		System.out.println("***************************************");
+                    } catch (SQLException ex) {
+                        ex.printStackTrace();
+                        JOptionPane.showMessageDialog(null, "Erro ao cadastrar cliente.");
+                    }
                 }
-            }
+                }
+
+                
         });
         panel.add(cadastrarButton);
 
