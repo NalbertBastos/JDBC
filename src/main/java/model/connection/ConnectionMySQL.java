@@ -23,7 +23,7 @@ public class ConnectionMySQL {
 
 	        String username = "root";        
 
-	        String password = "Compass123";      
+	        String password = "";      
 
 	        connection = DriverManager.getConnection(url, username, password);
 	        
