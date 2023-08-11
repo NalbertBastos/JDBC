@@ -3,6 +3,7 @@ package view;
 import javax.swing.*;
 
 import dao.PessoaDAO;
+import entities.Pessoa;
 import model.connection.ConnectionMySQL;
 
 import java.awt.*;
@@ -15,6 +16,7 @@ import java.sql.SQLException;
 public class CadastroClienteGUI {
     public static void main(String[] args) throws SQLException {
     	final PessoaDAO po = new PessoaDAO();
+    	final Pessoa p = new Pessoa();
         JFrame frame = new JFrame("Cadastro de Cliente");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
@@ -50,17 +52,12 @@ public class CadastroClienteGUI {
                     JOptionPane.showMessageDialog(null, "Preencha todos os campos obrigatórios.");
                 } else {
                 	try {
-                        Connection connection = ConnectionMySQL.getConnectionMySQL();
-                        String query = "INSERT INTO pessoas (nome, sobrenome, nascimento, sexo) VALUES (?, ?, ?, ?)";
-                        PreparedStatement preparedStatement = connection.prepareStatement(query);
-                        preparedStatement.setString(1, nome);
-                        preparedStatement.setString(2, sobrenome);
-                        preparedStatement.setString(3, dataNascimento);
-                        preparedStatement.setString(4, sexo);
-
-                        preparedStatement.executeUpdate();
-
-                        preparedStatement.close();
+                		p.setNome(nome);
+                		p.setSobrenome(sobrenome);
+                		p.setNascimento(dataNascimento);
+                		p.setSexo(sexo);
+                		po.addPeople(p);
+                		
                         ConnectionMySQL.FecharConexao();
 
                         JOptionPane.showMessageDialog(null, "Cliente cadastrado com sucesso!");
